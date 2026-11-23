@@ -10,64 +10,33 @@
   <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
-    :root{--ink:#574236;--green:#4c8b55;--pink:#ff8ca1;--sky:#c9efff;--shadow:0 10px 0 #89633b18,0 16px 30px #4e57341b}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#fff8df,#fff1ed 54%,#e6f8e6);color:var(--ink);font-family:'Jua',sans-serif;letter-spacing:.2px}
-    button,input{font:inherit}button{cursor:pointer}
-    .page{max-width:1220px;margin:auto;padding:20px 24px 32px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .brand{font-size:23px;display:flex;align-items:center;gap:8px}.brand-icon{font-size:32px}
-    .soft-button,.upload-button,.draw-button{border:0;border-radius:20px;padding:11px 16px;background:#fff;color:#5d794d;box-shadow:0 5px 0 #668d4d25;transition:.18s}
-    .soft-button:hover,.upload-button:hover{transform:translateY(-2px)}
-    .intro{text-align:center;padding:24px 0 15px}
-    .eyebrow{display:inline-block;padding:7px 13px;border-radius:99px;background:#fff;border:2px solid #ffe39b;color:#b27643;font-size:14px}
-    .intro h1{font-size:clamp(30px,5vw,47px);color:#52884d;text-shadow:2px 3px #fff;margin:11px 0 4px}
-    .intro p{font-size:17px;color:#846a55;margin:0}
-    .dashboard{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin:17px 0 15px}
-    .stat{padding:9px 14px;background:#fff;border-radius:18px;border:2px solid #f6e7c7;color:#8b7159}
-    .stat strong{font-size:20px;color:#56844f;margin-left:4px}
-    .draw-button{background:#ff776e;color:white;font-size:19px;padding:13px 23px;box-shadow:0 5px 0 #c95c4e}
-    .draw-button:hover{transform:translateY(-2px)}.draw-button:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-    /* 나무가 자라는 공간은 하늘색이며, 아래쪽에는 둥근 연두색 잔디가 있어요. */
+    :root{--ink:#574236;--green:#4c8b55;--shadow:0 10px 0 #89633b18,0 16px 30px #4e57341b}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(180deg,#fff8df,#fff1ed 54%,#e6f8e6);color:var(--ink);font-family:'Jua',sans-serif;letter-spacing:.2px}
+    button,input{font:inherit}button{cursor:pointer}.page{max-width:1220px;margin:auto;padding:20px 24px 32px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:23px;display:flex;align-items:center;gap:8px}.brand-icon{font-size:32px}
+    .soft-button,.upload-button,.draw-button{border:0;border-radius:20px;padding:11px 16px;background:#fff;color:#5d794d;box-shadow:0 5px 0 #668d4d25;transition:.18s}.soft-button:hover,.upload-button:hover{transform:translateY(-2px)}
+    .intro{text-align:center;padding:24px 0 15px}.eyebrow{display:inline-block;padding:7px 13px;border-radius:99px;background:#fff;border:2px solid #ffe39b;color:#b27643;font-size:14px}
+    .intro h1{font-size:clamp(30px,5vw,47px);color:#52884d;text-shadow:2px 3px #fff;margin:11px 0 4px}.intro p{font-size:17px;color:#846a55;margin:0}
+    .dashboard{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin:17px 0 15px}.stat{padding:9px 14px;background:#fff;border-radius:18px;border:2px solid #f6e7c7;color:#8b7159}.stat strong{font-size:20px;color:#56844f;margin-left:4px}
+    .draw-button{background:#ff776e;color:white;font-size:19px;padding:13px 23px;box-shadow:0 5px 0 #c95c4e}.draw-button:hover{transform:translateY(-2px)}.draw-button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    /* 나무가 놓이는 곳은 하늘색, 아래는 둥근 연두색 잔디예요. */
     .tree-stage{position:relative;min-height:690px;overflow:hidden;border:4px solid white;border-radius:34px;background:#c9efff;box-shadow:var(--shadow)}
-    .sun{position:absolute;top:30px;right:10%;width:78px;height:78px;border-radius:50%;background:#ffdc68;box-shadow:0 0 0 12px #fff3b655}
-    .cloud{position:absolute;color:#fff;font-size:48px;text-shadow:0 3px #acd9e5}.cloud.one{top:67px;left:8%}.cloud.two{top:135px;right:12%;font-size:37px}
+    .sun{position:absolute;top:30px;right:10%;width:78px;height:78px;border-radius:50%;background:#ffdc68;box-shadow:0 0 0 12px #fff3b655}.cloud{position:absolute;color:#fff;font-size:48px;text-shadow:0 3px #acd9e5}.cloud.one{top:67px;left:8%}.cloud.two{top:135px;right:12%;font-size:37px}
     .grass{position:absolute;z-index:1;left:-5%;right:-5%;bottom:-1px;height:30%;background:#bde58c;border-radius:50% 50% 0 0/24% 24% 0 0;box-shadow:inset 0 10px #a9d97a}
-
-    /* 겹쳐진 둥근 잎사귀와 작은 가지로 솜사탕처럼 풍성한 나무를 그려요. */
-    .tree-art{position:absolute;z-index:2;left:50%;bottom:12%;transform:translateX(-50%);width:min(690px,84%);height:auto;overflow:visible;pointer-events:none}
-    .tree-art .leaf-shadow{fill:#69ad58}.tree-art .leaf-light{fill:#a8dc70}.tree-art .leaf-mid{fill:#91cc62}.tree-art .leaf-deep{fill:#78ba58}
-    .tree-art .trunk{fill:#a96f43}.tree-art .trunk-light{fill:#c78b55}.tree-art .branch{fill:none;stroke:#9b6239;stroke-width:17;stroke-linecap:round;stroke-linejoin:round}
-
-    /* 학생들의 꽃과 사과는 수관 위에 배치하며, 새로 피어날 때 통통 튀어요. */
-    .flowers-layer{position:absolute;inset:0;z-index:4;pointer-events:none}
-    .flower{position:absolute;width:72px;height:82px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;background:transparent;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 1px #46552b38);pointer-events:auto;transition:transform .18s;animation:bloom .48s cubic-bezier(.2,1.5,.5,1) both;animation-delay:var(--bloom-delay,0ms)}
-    .flower:hover{transform:translate(-50%,-50%) scale(1.16);z-index:5}
-    .flower .emoji{font-size:42px;line-height:45px}.flower.apple .emoji{font-size:39px}
-    .flower .name{max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 7px;border-radius:99px;background:#fff;color:#62503d;font-size:12px;border:1px solid #f4d7a1}
-    .empty-hint{position:absolute;z-index:5;left:50%;top:43%;transform:translate(-50%,-50%);width:min(330px,80%);padding:19px;border:3px dashed #92bc75;border-radius:24px;background:#fff;text-align:center;color:#648454;line-height:1.6}
-    .empty-hint strong{display:block;color:#52884d;font-size:20px;margin-bottom:4px}
-    .tree-footer{position:relative;z-index:4;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:16px}
-    .upload-button{display:inline-block;font-size:15px}.note{text-align:center;color:#8a7966;font-size:13px;margin:8px 0}.file-input{display:none}
-
-    .modal-backdrop,.result-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:20;background:#433c367c;backdrop-filter:blur(4px)}
-    .modal-backdrop.open,.result-backdrop.open{display:flex}.modal{width:min(440px,100%);padding:27px;border:4px solid #ffe29a;border-radius:28px;background:#fffdf3;box-shadow:var(--shadow)}
-    .modal h2{font-size:25px;margin:0 0 7px;color:#58894d}.modal .sub{color:#8a7966;margin:0 0 16px}.modal label{display:block;margin:12px 0 6px;color:#806950}
-    .modal input{width:100%;padding:12px;border:2px solid #eee0c8;border-radius:14px;outline:none}.modal input:focus{border-color:#9ec77b}
-    .modal-buttons{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.modal-buttons button,.close-result{border:0;border-radius:14px;padding:11px 16px}
-    .cancel{background:#f1ece2;color:#786b5c}.save,.close-result{background:#69a85b;color:white}
-    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);padding:12px 18px;border-radius:99px;background:#574236;color:white;opacity:0;pointer-events:none;transition:.25s;z-index:30}
-    .toast.show{opacity:1;transform:translate(-50%,0)}.result-backdrop{z-index:25;background:#37643dc9}
-    .result-card{width:min(500px,100%);min-height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 26px;border:6px solid #ffe49a;border-radius:38px;background:#fffdf1;box-shadow:0 20px 0 #cfaa5c55,0 30px 80px #172a2066}
-    .result-apple{font-size:90px;animation:bob 1.5s ease-in-out infinite}.result-card h2{font-size:32px;color:#57864d;margin:8px}
-    .result-card .message{font-size:23px;line-height:1.5;color:#866440;margin:5px 0 22px;max-width:390px;overflow-wrap:anywhere}
-    @keyframes bloom{from{opacity:0;transform:translate(-50%,-50%) scale(.12) rotate(-18deg)}to{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}}
-    @keyframes bob{50%{transform:translateY(-8px)}}
-    @keyframes fall{to{transform:translate(-50%,180px) rotate(35deg);opacity:0}}
-
-    /* 작은 화면에서도 나무의 수관과 학생 꽃이 잘 보이도록 크기를 맞춰요. */
-    @media(max-width:650px){.page{padding:15px 11px 24px}.brand{font-size:18px}.brand-icon{font-size:27px}.soft-button{padding:9px 10px;font-size:12px}.intro{padding-top:22px}.intro p{font-size:14px}.tree-stage{min-height:570px;border-radius:25px}.tree-art{width:min(500px,98%);bottom:14%}.flower{width:58px;height:68px}.flower .emoji{font-size:35px;line-height:37px}.flower.apple .emoji{font-size:33px}.flower .name{max-width:70px;font-size:11px}.sun{width:58px;height:58px;top:18px}.cloud.one{font-size:35px}.cloud.two{font-size:29px}}
+    /* 참고 이미지처럼 구름 모양의 초록 수관과 짧은 갈색 줄기 나무를 크게 보여줘요. */
+    .tree-image{position:absolute;z-index:2;left:50%;bottom:3%;transform:translateX(-50%);width:min(720px,88%);height:94%;object-fit:contain;object-position:center bottom;pointer-events:none;user-select:none}
+    /* 꽃과 사과는 고정된 나무 위에 놓고, 새 꽃은 차례로 피어나게 해요. */
+    .flowers-layer{position:absolute;inset:0;z-index:4;pointer-events:none}.flower{position:absolute;width:72px;height:82px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:0;background:transparent;transform:translate(-50%,-50%);filter:drop-shadow(0 3px 1px #46552b38);pointer-events:auto;transition:transform .18s;animation:bloom .48s cubic-bezier(.2,1.5,.5,1) both;animation-delay:var(--bloom-delay,0ms)}
+    .flower:hover{transform:translate(-50%,-50%) scale(1.16);z-index:5}.flower .flower-image{width:42px;height:42px;object-fit:contain}.flower.apple .flower-image{width:39px;height:39px}.flower .name{max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 7px;border-radius:99px;background:#fff;color:#62503d;font-size:12px;border:1px solid #f4d7a1}
+    .empty-hint{position:absolute;z-index:5;left:50%;top:43%;transform:translate(-50%,-50%);width:min(330px,80%);padding:19px;border:3px dashed #92bc75;border-radius:24px;background:#fff;text-align:center;color:#648454;line-height:1.6}.empty-hint strong{display:block;color:#52884d;font-size:20px;margin-bottom:4px}
+    .tree-footer{position:relative;z-index:4;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:16px}.upload-button{display:inline-block;font-size:15px}.note{text-align:center;color:#8a7966;font-size:13px;margin:8px 0}.file-input{display:none}
+    .modal-backdrop,.result-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:20;background:#433c367c;backdrop-filter:blur(4px)}.modal-backdrop.open,.result-backdrop.open{display:flex}
+    .modal{width:min(440px,100%);padding:27px;border:4px solid #ffe29a;border-radius:28px;background:#fffdf3;box-shadow:var(--shadow)}.modal h2{font-size:25px;margin:0 0 7px;color:#58894d}.modal .sub{color:#8a7966;margin:0 0 16px}.modal label{display:block;margin:12px 0 6px;color:#806950}
+    .modal input{width:100%;padding:12px;border:2px solid #eee0c8;border-radius:14px;outline:none}.modal input:focus{border-color:#9ec77b}.modal-buttons{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.modal-buttons button,.close-result{border:0;border-radius:14px;padding:11px 16px}.cancel{background:#f1ece2;color:#786b5c}.save,.close-result{background:#69a85b;color:white}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);padding:12px 18px;border-radius:99px;background:#574236;color:white;opacity:0;pointer-events:none;transition:.25s;z-index:30}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .result-backdrop{z-index:25;background:#37643dc9}.result-card{width:min(500px,100%);min-height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 26px;border:6px solid #ffe49a;border-radius:38px;background:#fffdf1;box-shadow:0 20px 0 #cfaa5c55,0 30px 80px #172a2066}.result-apple{font-size:90px;animation:bob 1.5s ease-in-out infinite}.result-card h2{font-size:32px;color:#57864d;margin:8px}.result-card .message{font-size:23px;line-height:1.5;color:#866440;margin:5px 0 22px;max-width:390px;overflow-wrap:anywhere}
+    @keyframes bloom{from{opacity:0;transform:translate(-50%,-50%) scale(.12) rotate(-18deg)}to{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}}@keyframes bob{50%{transform:translateY(-8px)}}@keyframes fall{to{transform:translate(-50%,180px) rotate(35deg);opacity:0}}
+    @media(max-width:650px){.page{padding:15px 11px 24px}.brand{font-size:18px}.brand-icon{font-size:27px}.soft-button{padding:9px 10px;font-size:12px}.intro{padding-top:22px}.intro p{font-size:14px}.tree-stage{min-height:570px;border-radius:25px}.tree-image{width:min(580px,98%);height:94%;bottom:3%}.flower{width:58px;height:68px}.flower .flower-image{width:35px;height:35px}.flower.apple .flower-image{width:33px;height:33px}.flower .name{max-width:70px;font-size:11px}.sun{width:58px;height:58px;top:18px}.cloud.one{font-size:35px}.cloud.two{font-size:29px}}
   </style>
 </head>
 <body>
@@ -76,25 +45,8 @@
     <section class="intro"><span class="eyebrow">🌼 다정한 말은 행복의 씨앗!</span><h1>오늘의 행복을 키워요 🍎</h1><p>오늘의 인사말이 될 행복 사과를 뽑아봐요!</p></section>
     <section class="dashboard" aria-label="나무 현황"><div class="stat">🌸 꽃 <strong id="flowerCount">0</strong></div><div class="stat">🍎 사과 <strong id="appleCount">0</strong></div><div class="stat">🎉 뽑은 사과 <strong id="pickedCount">0</strong></div><button class="draw-button" id="drawButton" type="button" disabled>🍎 사과 뽑기!</button></section>
     <section class="tree-stage" aria-label="학생들의 행복 사과나무">
-      <div class="sun" aria-hidden="true"></div><div class="cloud one" aria-hidden="true">☁️</div><div class="cloud two" aria-hidden="true">☁️</div>
-      <div class="grass" aria-hidden="true"></div>
-      <!-- SVG로 여러 겹의 둥근 솜사탕 잎과 귀여운 갈색 줄기를 그려요. -->
-      <svg class="tree-art" viewBox="0 0 640 570" role="img" aria-label="둥글고 폭신한 연두색 솜사탕 나무" xmlns="http://www.w3.org/2000/svg">
-        <!-- 잎사귀 뒤의 부드러운 그림자 -->
-        <g class="leaf-shadow" transform="translate(0 12)">
-          <circle cx="320" cy="148" r="116"/><circle cx="224" cy="191" r="96"/><circle cx="416" cy="191" r="96"/>
-          <circle cx="156" cy="253" r="78"/><circle cx="484" cy="253" r="78"/><circle cx="253" cy="275" r="104"/><circle cx="387" cy="275" r="104"/><circle cx="320" cy="331" r="104"/>
-        </g>
-        <!-- 짧고 따뜻한 갈색 줄기와 가지 -->
-        <path class="branch" d="M320 476 C318 390 260 332 218 283 M320 392 C352 344 405 309 446 277"/>
-        <path class="trunk" d="M282 534 C294 479 290 425 278 382 L362 382 C350 432 347 485 359 534 Q320 551 282 534Z"/>
-        <path class="trunk-light" d="M305 518 C312 466 307 422 302 397 L321 397 C326 447 327 486 325 529Z"/>
-        <!-- 여러 개의 둥근 잎사귀를 겹쳐 풍성한 수관을 만들어요. -->
-        <g class="leaf-light"><circle cx="320" cy="145" r="112"/><circle cx="221" cy="188" r="92"/><circle cx="419" cy="188" r="92"/><circle cx="158" cy="250" r="74"/><circle cx="482" cy="250" r="74"/></g>
-        <g class="leaf-mid"><circle cx="253" cy="265" r="101"/><circle cx="387" cy="265" r="101"/><circle cx="320" cy="321" r="100"/></g>
-        <g class="leaf-deep"><circle cx="234" cy="223" r="41"/><circle cx="411" cy="227" r="43"/><circle cx="320" cy="113" r="39"/><circle cx="179" cy="263" r="31"/><circle cx="461" cy="260" r="31"/><circle cx="276" cy="310" r="35"/><circle cx="365" cy="309" r="35"/></g>
-        <g class="leaf-light"><circle cx="320" cy="148" r="22"/><circle cx="221" cy="185" r="18"/><circle cx="418" cy="185" r="18"/><circle cx="154" cy="248" r="15"/><circle cx="486" cy="247" r="15"/></g>
-      </svg>
+      <div class="sun" aria-hidden="true"></div><div class="cloud one" aria-hidden="true">☁️</div><div class="cloud two" aria-hidden="true">☁️</div><div class="grass" aria-hidden="true"></div>
+      <img class="tree-image" src="assets/tree.svg" alt="둥글고 귀여운 초록 나무">
       <div class="flowers-layer" id="flowersLayer"></div>
       <div class="empty-hint" id="emptyHint"><strong>나무에 꽃을 피워볼까요? 🌱</strong>엑셀에서 학생 이름을 불러오면<br>예쁜 꽃이 활짝 피어요!</div>
     </section>
@@ -107,48 +59,46 @@
 <script>
 (() => {
   const STORAGE_KEY='happy-apple-tree-v1';
-  // 꽃과 사과가 잎사귀 수관 안쪽에 보이도록 위치를 정해요.
-  const layout=[[50,19],[38,23],[62,23],[27,29],[73,29],[45,30],[56,32],[17,37],[34,39],[49,40],[66,39],[83,37],[25,49],[40,50],[56,50],[72,49],[32,61],[48,61],[65,61],[51,72],[22,43],[78,43],[42,34],[59,42],[35,55],[61,56],[50,25],[28,34],[72,34],[46,46],[55,58],[38,68],[64,68],[18,56],[82,56],[50,54]];
-  // 사과꽃에는 다양한 파스텔 색을 순서대로 사용해요.
-  const flowerColors=['🌸','🌼','🌺','💮','🌷','🪷'];
+  // 나무 수관 안쪽에 고르게 꽃과 사과를 배치하는 위치예요.
+  const layout=[[50,16],[39,19],[61,19],[29,24],[71,24],[46,26],[55,27],[21,31],[36,33],[49,34],[64,33],[79,31],[26,41],[40,42],[54,42],[68,41],[34,50],[48,51],[62,50],[51,58],[22,36],[78,36],[43,22],[58,35],[35,45],[65,45],[50,29],[30,34],[70,34],[45,39],[56,48],[39,55],[61,55],[24,47],[76,47],[50,45]];
   let students=load(),editingId=null,toastTimer;
   const $=id=>document.getElementById(id);
-  // 브라우저에 저장된 학생 자료를 불러오고, 바뀐 내용은 다시 저장해요.
+  // 저장된 학생 자료를 불러오고 변경된 자료를 기기에 저장해요.
   function load(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));return Array.isArray(saved)?saved:[]}catch{return []}}
   function persist(){localStorage.setItem(STORAGE_KEY,JSON.stringify(students))}
   function safeText(value){return String(value??'').trim()}
-  // 나무 위에 학생별 꽃·사과를 그리고 개수와 꽃 피는 효과를 갱신해요.
+  // 학생마다 이미지 꽃 또는 사과를 나무 위에 그려요.
   function render(){
     const layer=$('flowersLayer');layer.innerHTML='';
     students.forEach((student,index)=>{
-      const button=document.createElement('button');button.type='button';button.className='flower '+(student.message?'apple':'');
+      const button=document.createElement('button');button.type='button';button.className='flower '+(student.message?'apple':'');button.dataset.studentId=student.id;
       const pos=layout[index%layout.length],ring=Math.floor(index/layout.length);
       button.style.left=`${Math.max(20,Math.min(80,pos[0]+(ring%2?1:-1)))}%`;
-      button.style.top=`${Math.max(17,Math.min(64,pos[1]+(ring?ring*1.1:0)))}%`;
+      button.style.top=`${Math.max(15,Math.min(59,pos[1]+(ring?ring*1.1:0)))}%`;
       button.style.setProperty('--bloom-delay',`${Math.min(index%12,8)*35}ms`);
       button.setAttribute('aria-label',`${student.name}${student.message?' 사과':' 사과꽃'}: 눌러서 ${student.message?'수정':'행복한 말 입력'}`);
-      const emoji=document.createElement('span');emoji.className='emoji';emoji.textContent=student.message?'🍎':flowerColors[index%flowerColors.length];button.append(emoji);
+      const image=document.createElement('img');image.className='flower-image';image.src=student.message?'🍎':'assets/flower.svg';image.alt='';
+      if(student.message){image.src='';image.alt='';image.textContent='🍎';image.className='emoji';button.append(image)}else{button.append(image)}
       const name=document.createElement('span');name.className='name';name.textContent=student.name;button.append(name);
       button.addEventListener('click',()=>openEditor(student.id));layer.append(button);
     });
     const flowers=students.filter(s=>!s.message).length,apples=students.filter(s=>s.message&&!s.picked).length;
-    $('flowerCount').textContent=flowers;$('appleCount').textContent=apples;$('pickedCount').textContent=students.filter(s=>s.picked).length;
-    $('drawButton').disabled=apples===0;$('emptyHint').style.display=students.length?'none':'block';
+    $('flowerCount').textContent=flowers;$('appleCount').textContent=apples;$('pickedCount').textContent=students.filter(s=>s.picked).length;$('drawButton').disabled=apples===0;$('emptyHint').style.display=students.length?'none':'block';
   }
-  // 화면 아래에 잠시 나타나는 안내말이에요.
+  // 화면에 잠깐 나타나는 안내말이에요.
   function notify(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500)}
-  // 학생 꽃을 누르면 이름과 행복한 말을 입력하거나 수정할 수 있어요.
+  // 학생 꽃을 누르면 이름과 행복한 말을 입력하거나 고칠 수 있어요.
   function openEditor(id=null){editingId=id;const student=students.find(s=>s.id===id);$('modalTitle').textContent=student?.message?'행복한 말을 고쳐요 ✏️':'꽃에게 예쁜 말을 선물해요 🌷';$('modalStudent').textContent=student?'이름이나 행복한 말을 바꿀 수 있어요!':'새로운 친구의 꽃을 만들어요.';$('studentName').value=student?.name||'';$('kindMessage').value=student?.message||'';$('messageModal').classList.add('open');setTimeout(()=>(student?.message?$('kindMessage'):$('studentName')).focus(),30)}
   function closeEditor(){$('messageModal').classList.remove('open');editingId=null}
-  // 입력한 이름과 다정한 말을 저장해 꽃을 사과로 바꿔요.
+  // 입력한 행복한 말을 저장하면 학생의 꽃이 사과로 바뀌어요.
   $('saveMessage').addEventListener('click',()=>{const name=safeText($('studentName').value),message=safeText($('kindMessage').value);if(!name){notify('학생 이름을 적어주세요!');$('studentName').focus();return}if(!message){notify('행복한 말을 적어주세요!');$('kindMessage').focus();return}if(editingId){const s=students.find(x=>x.id===editingId);if(s){s.name=name;s.message=message;s.picked=false}}else students.push({id:crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`,name,message,picked:false});persist();render();closeEditor();notify('예쁜 사과가 열렸어요! 🍎')});
   $('cancelModal').addEventListener('click',closeEditor);$('messageModal').addEventListener('click',e=>{if(e.target===$('messageModal'))closeEditor()});$('addStudentButton').addEventListener('click',()=>openEditor());
-  // 엑셀 첫 번째 시트에서 학생 이름을 읽어 나무에 꽃으로 추가해요.
+  // 엑셀 첫 번째 시트의 이름을 읽어 학생 꽃으로 추가해요.
   $('excelFile').addEventListener('change',async event=>{const file=event.target.files?.[0];if(!file)return;try{if(!window.XLSX)throw new Error('엑셀 도구를 불러오지 못했어요. 인터넷을 확인해주세요!');const data=await file.arrayBuffer(),workbook=XLSX.read(data,{type:'array'}),rows=XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]],{header:1,defval:''});let names=rows.flat().map(safeText).filter(Boolean);if(names.length&&/^(이름|학생\s*이름|성명|name|student)$/i.test(names[0]))names.shift();const existing=new Set(students.map(s=>s.name)),unique=[...new Set(names)].filter(name=>!existing.has(name));unique.forEach(name=>students.push({id:crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`,name,message:'',picked:false}));persist();render();notify(unique.length?`${unique.length}명의 꽃이 피었어요! 🌸`:'새로 추가할 이름이 없어요.')}catch(error){notify(error.message||'파일을 읽지 못했어요.')}finally{event.target.value=''}});
-  // 예시 학생을 추가해 나무에 꽃과 사과를 피워볼 수 있어요.
+  // 예시 학생을 추가해서 꽃과 사과 기능을 둘러볼 수 있어요.
   $('demoButton').addEventListener('click',()=>{const sample=['햇살','다온','별이','하늘','봄이','윤슬'],existing=new Set(students.map(s=>s.name));sample.filter(n=>!existing.has(n)).forEach(name=>students.push({id:crypto.randomUUID?.()||`${Date.now()}-${Math.random()}`,name,message:'너의 따뜻한 마음은 모두에게 큰 행복이야!',picked:false}));persist();render();notify('예쁜 예시 사과가 열렸어요! 🍎')});
-  // 아직 뽑지 않은 사과 중 하나를 골라 떨어뜨리고 행복 메시지를 보여줘요.
-  $('drawButton').addEventListener('click',()=>{const available=students.filter(s=>s.message&&!s.picked);if(!available.length){notify('먼저 꽃에 행복한 말을 적어주세요!');return}const chosen=available[Math.floor(Math.random()*available.length)];chosen.picked=true;const element=[...$('flowersLayer').children].find(el=>el.getAttribute('aria-label').startsWith(chosen.name+' 사과'));if(element){element.style.animation='fall .75s ease-in forwards';element.style.pointerEvents='none'}persist();setTimeout(()=>{render();$('resultName').textContent=chosen.name+'에게';$('resultMessage').textContent=chosen.message;$('resultModal').classList.add('open')},650)});
+  // 뽑지 않은 사과 중 하나를 골라 떨어뜨리고 큰 행복 메시지를 보여줘요.
+  $('drawButton').addEventListener('click',()=>{const available=students.filter(s=>s.message&&!s.picked);if(!available.length){notify('먼저 꽃에 행복한 말을 적어주세요!');return}const chosen=available[Math.floor(Math.random()*available.length)];chosen.picked=true;const element=$('flowersLayer').querySelector(`[data-student-id="${CSS.escape(String(chosen.id))}"]`);if(element){element.style.animation='fall .75s ease-in forwards';element.style.pointerEvents='none'}persist();setTimeout(()=>{render();$('resultName').textContent=chosen.name+'에게';$('resultMessage').textContent=chosen.message;$('resultModal').classList.add('open')},650)});
   function closeResult(){$('resultModal').classList.remove('open')}$('closeResult').addEventListener('click',closeResult);$('resultModal').addEventListener('click',e=>{if(e.target===$('resultModal'))closeResult()});
   // 확인한 경우에만 학생과 메시지를 모두 지워 나무를 초기화해요.
   $('resetButton').addEventListener('click',()=>{if(!students.length){notify('나무가 벌써 새로워요!');return}if(confirm('학생과 행복한 말을 모두 지우고 나무를 처음으로 되돌릴까요?')){students=[];persist();render();notify('새로운 나무가 되었어요! 🌱')}});

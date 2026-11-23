@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title">
+  <title id="title">분홍 꽃</title>
+  <!-- 모든 학생에게 같은 다섯 잎 꽃 그림을 사용해요. -->
+  <g fill="#ff91b5" stroke="#fff8fb" stroke-width="3">
+    <ellipse cx="50" cy="25" rx="16" ry="22"/><ellipse cx="74" cy="43" rx="16" ry="22" transform="rotate(72 74 43)"/>
+    <ellipse cx="65" cy="70" rx="16" ry="22" transform="rotate(144 65 70)"/><ellipse cx="35" cy="70" rx="16" ry="22" transform="rotate(216 35 70)"/>
+    <ellipse cx="26" cy="43" rx="16" ry="22" transform="rotate(288 26 43)"/>
+  </g>
+  <circle cx="50" cy="50" r="13" fill="#ffd95c"/>
+  <circle cx="46" cy="46" r="4" fill="#fff2a4"/>
+</svg>
